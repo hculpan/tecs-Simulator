@@ -3,17 +3,17 @@
  * User: harry
  * Date: 2/5/14
  * Time: 1:26 PM
- * To change this template use File | Settings | File Templates.
  */
 package main
 
- import (
- 	"fmt"
- 	"os"
- 	"os/user"
- 	"path/filepath"
- 	"log"
- 	"github.com/jimlawless/cfg"
+import (
+	"fmt"
+	chips "github.com/hculpan/tecs-Simulator/chips"
+	"github.com/jimlawless/cfg"
+	"log"
+	"os"
+	"os/user"
+	"path/filepath"
 )
 
 func main() {
@@ -40,5 +40,10 @@ func main() {
 	fmt.Printf("%v\n", mymap)
 	pwd, _ := os.Getwd()
 	fmt.Println(pwd)
-}
 
+	var chip chips.Chip
+	chip.SetName("nand")
+	chip.SetInputs("a", "b")
+	chip.SetOutputs("out", nil)
+	chip.EchoChip()
+}
