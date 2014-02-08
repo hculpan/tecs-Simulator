@@ -11,7 +11,7 @@ import (
 	chips "github.com/hculpan/tecs-Simulator/chips"
 	"github.com/jimlawless/cfg"
 	"log"
-	"os"
+	//	"os"
 	"os/user"
 	"path/filepath"
 )
@@ -37,13 +37,24 @@ func main() {
 		configOptions.installed_chips = filepath.Join(usr.HomeDir, "installed-chips")
 	}
 
-	fmt.Printf("%v\n", mymap)
-	pwd, _ := os.Getwd()
-	fmt.Println(pwd)
+	//	fmt.Printf("%v\n", mymap)
+	//pwd, _ := os.Getwd()
+	//}" "	fmt.Println(pwd)
 
-	var chip chips.Chip
-	chip.SetName("nand")
-	chip.SetInputs("a", "b")
-	chip.SetOutputs("out", nil)
-	chip.EchoChip()
+	chips.Init("Not gate")
+
+	output, _ := chips.NewChip("out")
+
+	// not
+	chip, err := chips.NewChip("Nand", chips.ChipOut{"a", output})
+	if err != nil {
+		fmt.Println("Unable to create chip:", err.Error())
+		return
+	}
+
+	input, _ := chips.NewChip("in", chips.ChipOut{"a", chip}, chips.ChipOut{"b", chip})
+
+	input.SetInput("a", 0)
+
+	chips.Process()
 }
