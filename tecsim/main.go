@@ -7,7 +7,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	chips "github.com/hculpan/tecs-Simulator/chips"
 	"github.com/jimlawless/cfg"
 	"log"
@@ -37,24 +37,55 @@ func main() {
 		configOptions.installed_chips = filepath.Join(usr.HomeDir, "installed-chips")
 	}
 
-	//	fmt.Printf("%v\n", mymap)
-	//pwd, _ := os.Getwd()
-	//}" "	fmt.Println(pwd)
+	chips.Init("And gate")
+	chips.VerboseOutput()
 
-	chips.Init("Not gate")
+	output, _ := chips.NewChip("Out")
+	output.SetInputs("a")
 
-	output, _ := chips.NewChip("out")
+	nand, _ := chips.NewChip("Nand", chips.ChipOut{Name: "a", ConnectedTo: output})
+	nand.SetNickname("nand")
 
-	// not
-	chip, err := chips.NewChip("Nand", chips.ChipOut{"a", output})
-	if err != nil {
-		fmt.Println("Unable to create chip:", err.Error())
-		return
-	}
+	not1, _ := chips.NewChip("Nand", chips.ChipOut{Name: "a", ConnectedTo: nand})
+	not1.SetNickname("not1")
 
-	input, _ := chips.NewChip("in", chips.ChipOut{"a", chip}, chips.ChipOut{"b", chip})
+	not2, _ := chips.NewChip("Nand", chips.ChipOut{Name: "b", ConnectedTo: nand})
+	not2.SetNickname("not2")
+
+	input, _ := chips.NewChip("In",
+		chips.ChipOut{"a", not1, "a"}, chips.ChipOut{"b", not1, "a"},
+		chips.ChipOut{"a", not2, "b"}, chips.ChipOut{"b", not2, "b"})
+	input.SetInputs("a", "b")
+	input.SetInput("a", 1)
+	input.SetInput("b", 1)
+
+	chips.Process()
+
+	chips.Reset()
 
 	input.SetInput("a", 0)
+	input.SetInput("b", 0)
+
+	chips.Process()
+
+	chips.Reset()
+
+	input.SetInput("a", 1)
+	input.SetInput("b", 0)
+
+	chips.Process()
+
+	chips.Reset()
+
+	input.SetInput("a", 0)
+	input.SetInput("b", 1)
+
+	chips.Process()
+
+	chips.Reset()
+
+	input.SetInput("a", 1)
+	input.SetInput("b", 1)
 
 	chips.Process()
 }
